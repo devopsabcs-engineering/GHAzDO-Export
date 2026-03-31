@@ -1,0 +1,54 @@
+name: Export Security Alerts
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Run every Monday at 6 AM UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  export-security-alerts:
+    name: Export Security Alerts to CSV
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Export Security Alerts
+        shell: pwsh
+        env:
+          ADO_ORGANIZATION: ${{ secrets.ADO_ORGANIZATION }}
+          ADO_PAT: ${{ secrets.ADO_PAT }}
+          OUTPUT_CSV_FILE: ${{ vars.OUTPUT_CSV_FILE || 'All-ADO-Alerts.csv' }}
+        run: .\Export-Alerts.ps1
+
+      - name: Upload CSV as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-alerts
+          path: ${{ vars.OUTPUT_CSV_FILE || 'All-ADO-Alerts.csv' }}
+          retention-days: 90
+
+      - name: Azure Login (OIDC)
+        if: vars.STORAGE_ACCOUNT_NAME != ''
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Az Storage Upload
+        if: vars.STORAGE_ACCOUNT_NAME != ''
+        shell: pwsh
+        run: |
+          az storage blob upload `
+            --account-name "${{ vars.STORAGE_ACCOUNT_NAME }}" `
+            --container-name "${{ vars.CONTAINER_NAME }}" `
+            --name "${{ vars.OUTPUT_CSV_FILE || 'All-ADO-Alerts.csv' }}" `
+            --file "${{ vars.OUTPUT_CSV_FILE || 'All-ADO-Alerts.csv' }}" `
+            --auth-mode login `
+            --overwrite
