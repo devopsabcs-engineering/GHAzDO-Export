@@ -6,7 +6,7 @@ expression Parameter1 = #"Sample File" meta [IsParameterQuery=true, BinaryIdenti
 
 expression 'Sample File' =
 		let
-		    Source = AzureStorage.Blobs("stghazdoalerts"),
+		    Source = AzureStorage.Blobs("stghazdo4548"),
 		    #"ado-alerts1" = Source{[Name="ado-alerts"]}[Data],
 		    #"Expanded Attributes" = Table.ExpandRecordColumn(#"ado-alerts1", "Attributes", {"Content Type", "Kind", "Size"}, {"Attributes.Content Type", "Attributes.Kind", "Attributes.Size"}),
 		    Navigation1 = #"Expanded Attributes"{0}[Content]
@@ -16,6 +16,8 @@ expression 'Sample File' =
 	queryGroup: 'Transform File from ado-alerts\Helper Queries'
 
 	annotation PBI_ResultType = Binary
+
+	annotation PBI_NavigationStepName = Navigation
 
 expression 'Transform Sample File' =
 		let
@@ -37,9 +39,10 @@ expression 'Transform File' =
 		    #"Promoted Headers"
 		in
 		    Source
-	mAttributes: [ FunctionQueryBinding = "{""exemplarFormulaName"":""Transform Sample File""}" ]
 	lineageTag: 7ca419a2-388f-41e4-88f7-820b6fdbab48
 	queryGroup: 'Transform File from ado-alerts\Helper Queries'
 
 	annotation PBI_ResultType = Function
+
+	annotation PBI_NavigationStepName = Navigation
 
