@@ -24,7 +24,7 @@ jobs:
   - task: AzureCLI@2
     displayName: 'Export Security Alerts'
     inputs:
-      azureSubscription: 'adoGHAzDOServicesConnection'
+      azureSubscription: '$(azureServiceConnection)'
       scriptType: 'ps'
       scriptLocation: 'scriptPath'
       scriptPath: '$(Build.SourcesDirectory)\Export-Alerts.ps1'
@@ -37,7 +37,7 @@ jobs:
   - task: AzureCLI@2
     displayName: 'Upload CSV to Azure Storage'
     inputs:
-      azureSubscription: 'adoGHAzDOServicesConnection'
+      azureSubscription: '$(azureServiceConnection)'
       scriptType: 'ps'
       scriptLocation: 'inlineScript'
       inlineScript: |
