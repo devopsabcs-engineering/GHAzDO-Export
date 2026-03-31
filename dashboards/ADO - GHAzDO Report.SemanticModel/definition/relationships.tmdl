@@ -1,0 +1,20 @@
+relationship 77c61fb8-7cde-4603-b5db-fea3547d858f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: config.lastRefresh
+	toColumn: LocalDateTable_9a07406e-285d-452e-b21f-21285c480150.Date
+
+relationship 5347ed91-f188-44c5-8832-28a3cdad7065
+	joinOnDateBehavior: datePartOnly
+	fromColumn: All-ADO-Alerts.FirstDetectionDate
+	toColumn: LocalDateTable_64d6bcc3-0721-4dd6-9813-e8ca2a847587.Date
+
+relationship 76cd1351-7549-4252-971d-fa51d46296b5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: All-ADO-Alerts.LastDetectionDate
+	toColumn: LocalDateTable_93fad7d7-57cf-4652-b136-94ac2df3c19e.Date
+
+relationship c12330c9-c14e-49b4-9cd8-56f73f1b00f7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: All-ADO-Alerts.IntroductionDate
+	toColumn: LocalDateTable_d73070a1-96c9-4b4c-a458-5c058d423d59.Date
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "ADO - GHAzDO Report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "b040d6d6-749d-4d1d-98dc-c3753151a4db"
+  }
+}

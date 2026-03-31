@@ -1,0 +1,167 @@
+table All-ADO-Alerts
+	lineageTag: fe229c93-dc66-41fa-bd2f-f30b66d9c0a9
+
+	column ProjectName
+		dataType: string
+		lineageTag: 392a520b-9a93-4042-9abf-ca91fb741ed3
+		summarizeBy: none
+		sourceColumn: ProjectName
+
+		annotation SummarizationSetBy = Automatic
+
+	column RepositoryName
+		dataType: string
+		lineageTag: b40bc844-bae7-43e7-a39e-454cc8578716
+		summarizeBy: none
+		sourceColumn: RepositoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column RepositoryId
+		dataType: string
+		lineageTag: 3cfaa082-080a-4f47-bdc8-d5ca7f1a6ffe
+		summarizeBy: none
+		sourceColumn: RepositoryId
+
+		annotation SummarizationSetBy = Automatic
+
+	column AlertId
+		dataType: int64
+		formatString: 0
+		lineageTag: d1bfbf4e-91a4-4b71-ab4f-4f50c4521e09
+		summarizeBy: count
+		sourceColumn: AlertId
+
+		annotation SummarizationSetBy = Automatic
+
+	column AlertType
+		dataType: string
+		lineageTag: fa988590-ae95-44a0-b5fe-f92f4ef03067
+		summarizeBy: none
+		sourceColumn: AlertType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Title
+		dataType: string
+		lineageTag: f37df193-e530-46bf-972d-87370347a8ea
+		summarizeBy: none
+		sourceColumn: Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column Severity
+		dataType: string
+		lineageTag: 7721d388-3a33-4a55-a53c-bb337c630245
+		summarizeBy: none
+		sourceColumn: Severity
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: d01df525-8b6d-4351-a2b6-925476bcee3d
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tool
+		dataType: string
+		lineageTag: 72212273-ba69-4b8f-8fd6-a7d11e1ff66c
+		summarizeBy: none
+		sourceColumn: Tool
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstDetectionDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c7b53559-5479-4c6e-aa65-d8826d1cbb1c
+		summarizeBy: none
+		sourceColumn: FirstDetectionDate
+
+		variation Variation
+			isDefault
+			relationship: 5347ed91-f188-44c5-8832-28a3cdad7065
+			defaultHierarchy: LocalDateTable_64d6bcc3-0721-4dd6-9813-e8ca2a847587.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastDetectionDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 30ae0b80-8425-4e8f-ace1-bca19289b219
+		summarizeBy: none
+		sourceColumn: LastDetectionDate
+
+		variation Variation
+			isDefault
+			relationship: 76cd1351-7549-4252-971d-fa51d46296b5
+			defaultHierarchy: LocalDateTable_93fad7d7-57cf-4652-b136-94ac2df3c19e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column IntroductionDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ac86f32c-ff98-4458-82a9-c8dd827258ee
+		summarizeBy: none
+		sourceColumn: IntroductionDate
+
+		variation Variation
+			isDefault
+			relationship: c12330c9-c14e-49b4-9cd8-56f73f1b00f7
+			defaultHierarchy: LocalDateTable_d73070a1-96c9-4b4c-a458-5c058d423d59.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column GitRef
+		dataType: string
+		lineageTag: 0a909e08-abf5-4b84-962e-814b275f2ec2
+		summarizeBy: none
+		sourceColumn: GitRef
+
+		annotation SummarizationSetBy = Automatic
+
+	column Confidence
+		dataType: string
+		lineageTag: 3132d7cc-8352-4317-818b-026cb5a29901
+		summarizeBy: none
+		sourceColumn: Confidence
+
+		annotation SummarizationSetBy = Automatic
+
+	column AlertURL = "https://dev.azure.com/" & FIRSTNONBLANK(config[adoOrganization], 0) & "/" & [ProjectName] & "/_git/" & [RepositoryName] & "/alerts/" & [AlertId] & "?branch=" & [GitRef]
+		lineageTag: 097c897e-101b-42ea-a185-2747366eb40c
+		dataCategory: WebUrl
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column DaysOpen = DATEDIFF('All-ADO-Alerts'[FirstDetectionDate], NOW(), DAY)
+		formatString: 0
+		lineageTag: 696fd633-6fed-45e2-8076-4d5707bda224
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition All-ADO-Alerts = m
+		mode: import
+		source =
+				let
+				    Source = AzureStorage.Blobs("stghazdoalerts"),
+				    #"ado-alerts1" = Source{[Name="ado-alerts"]}[Data],
+				    #"Expanded Attributes" = Table.ExpandRecordColumn(#"ado-alerts1", "Attributes", {"Content Type", "Kind", "Size"}, {"Attributes.Content Type", "Attributes.Kind", "Attributes.Size"}),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Expanded Attributes", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1", {"Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"ProjectName", type text}, {"RepositoryName", type text}, {"RepositoryId", type text}, {"AlertId", Int64.Type}, {"AlertType", type text}, {"Title", type text}, {"Severity", type text}, {"State", type text}, {"Tool", type text}, {"FirstDetectionDate", type datetime}, {"LastDetectionDate", type datetime}, {"IntroductionDate", type datetime}, {"GitRef", type text}, {"Confidence", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

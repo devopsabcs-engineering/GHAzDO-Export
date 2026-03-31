@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "ADO - GHAzDO Report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d01488e4-06f3-43f3-b42e-51f3c145513e"
+  }
+}

@@ -1,0 +1,38 @@
+table config
+	lineageTag: cedb6d72-9c5a-437a-b81d-270a3069dddd
+
+	column lastRefresh
+		dataType: dateTime
+		formatString: mmmm d\, yyyy
+		lineageTag: d3bcbea7-b938-4ffb-918c-b21cc3fd3dc1
+		summarizeBy: none
+		sourceColumn: lastRefresh
+
+		variation Variation
+			isDefault
+			relationship: 77c61fb8-7cde-4603-b5db-fea3547d858f
+			defaultHierarchy: LocalDateTable_9a07406e-285d-452e-b21f-21285c480150.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column adoOrganization = "jm-demo"
+		lineageTag: 52173894-96fa-4564-b1f6-1f9b9349460b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition config = m
+		mode: import
+		source =
+				let
+				    Source = #table({"lastRefresh"}, {{DateTime.Time(DateTime.LocalNow()) & DateTime.Date(DateTime.LocalNow())}}),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"lastRefresh", type datetime}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

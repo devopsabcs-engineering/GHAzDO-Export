@@ -1,0 +1,33 @@
+model Model
+	culture: en-CA
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-CA
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup 'Transform File from ado-alerts'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'Transform File from ado-alerts\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+annotation PBI_QueryOrder = ["config","All-ADO-Alerts","Sample File","Parameter1","Transform Sample File","Transform File"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table config
+ref table DateTableTemplate_95bc6b7c-fb52-4abf-b6b8-c907994ebece
+ref table LocalDateTable_9a07406e-285d-452e-b21f-21285c480150
+ref table All-ADO-Alerts
+ref table LocalDateTable_64d6bcc3-0721-4dd6-9813-e8ca2a847587
+ref table LocalDateTable_93fad7d7-57cf-4652-b136-94ac2df3c19e
+ref table LocalDateTable_d73070a1-96c9-4b4c-a458-5c058d423d59
+
+ref cultureInfo en-CA
+

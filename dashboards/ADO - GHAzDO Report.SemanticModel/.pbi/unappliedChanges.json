@@ -1,0 +1,125 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/semanticModel/unappliedChanges/1.0.0/schema.json",
+  "conceptualSchemaSettings": {},
+  "queries": [
+    {
+      "name": "config",
+      "lineageTag": "cedb6d72-9c5a-437a-b81d-270a3069dddd",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = #table({\"lastRefresh\"}, {{DateTime.Time(DateTime.LocalNow()) & DateTime.Date(DateTime.LocalNow())}}),",
+        "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"lastRefresh\", type datetime}})",
+        "in",
+        "    #\"Changed Type\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = #table({\\\"lastRefresh\\\"}, {{DateTime.Time(DateTime.LocalNow()) & DateTime.Date(DateTime.LocalNow())}}),\\n    #\\\"Changed Type\\\" = Table.TransformColumnTypes(Source,{{\\\"lastRefresh\\\", type datetime}})\\nin\\n    #\\\"Changed Type\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "All-ADO-Alerts",
+      "lineageTag": "fe229c93-dc66-41fa-bd2f-f30b66d9c0a9",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = AzureStorage.Blobs(\"stghazdo4548\"),",
+        "    #\"ado-alerts1\" = Source{[Name=\"MY-CONTAINER\"]}[Data],",
+        "    #\"Expanded Attributes\" = Table.ExpandRecordColumn(#\"ado-alerts1\", \"Attributes\", {\"Content Type\", \"Kind\", \"Size\"}, {\"Attributes.Content Type\", \"Attributes.Kind\", \"Attributes.Size\"}),",
+        "    #\"Filtered Hidden Files1\" = Table.SelectRows(#\"Expanded Attributes\", each [Attributes]?[Hidden]? <> true),",
+        "    #\"Invoke Custom Function1\" = Table.AddColumn(#\"Filtered Hidden Files1\", \"Transform File\", each #\"Transform File\"([Content])),",
+        "    #\"Removed Other Columns1\" = Table.SelectColumns(#\"Invoke Custom Function1\", {\"Transform File\"}),",
+        "    #\"Expanded Table Column1\" = Table.ExpandTableColumn(#\"Removed Other Columns1\", \"Transform File\", Table.ColumnNames(#\"Transform File\"(#\"Sample File\"))),",
+        "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Expanded Table Column1\",{{\"ProjectName\", type text}, {\"RepositoryName\", type text}, {\"RepositoryId\", type text}, {\"AlertId\", Int64.Type}, {\"AlertType\", type text}, {\"Title\", type text}, {\"Severity\", type text}, {\"State\", type text}, {\"Tool\", type text}, {\"FirstDetectionDate\", type datetime}, {\"LastDetectionDate\", type datetime}, {\"IntroductionDate\", type datetime}, {\"GitRef\", type text}, {\"Confidence\", type text}})",
+        "in",
+        "    #\"Changed Type\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = AzureStorage.Blobs(\\\"stghazdoalerts\\\"),\\n    #\\\"ado-alerts1\\\" = Source{[Name=\\\"ado-alerts\\\"]}[Data],\\n    #\\\"Expanded Attributes\\\" = Table.ExpandRecordColumn(#\\\"ado-alerts1\\\", \\\"Attributes\\\", {\\\"Content Type\\\", \\\"Kind\\\", \\\"Size\\\"}, {\\\"Attributes.Content Type\\\", \\\"Attributes.Kind\\\", \\\"Attributes.Size\\\"}),\\n    #\\\"Filtered Hidden Files1\\\" = Table.SelectRows(#\\\"Expanded Attributes\\\", each [Attributes]?[Hidden]? <> true),\\n    #\\\"Invoke Custom Function1\\\" = Table.AddColumn(#\\\"Filtered Hidden Files1\\\", \\\"Transform File\\\", each #\\\"Transform File\\\"([Content])),\\n    #\\\"Removed Other Columns1\\\" = Table.SelectColumns(#\\\"Invoke Custom Function1\\\", {\\\"Transform File\\\"}),\\n    #\\\"Expanded Table Column1\\\" = Table.ExpandTableColumn(#\\\"Removed Other Columns1\\\", \\\"Transform File\\\", Table.ColumnNames(#\\\"Transform File\\\"(#\\\"Sample File\\\"))),\\n    #\\\"Changed Type\\\" = Table.TransformColumnTypes(#\\\"Expanded Table Column1\\\",{{\\\"ProjectName\\\", type text}, {\\\"RepositoryName\\\", type text}, {\\\"RepositoryId\\\", type text}, {\\\"AlertId\\\", Int64.Type}, {\\\"AlertType\\\", type text}, {\\\"Title\\\", type text}, {\\\"Severity\\\", type text}, {\\\"State\\\", type text}, {\\\"Tool\\\", type text}, {\\\"FirstDetectionDate\\\", type datetime}, {\\\"LastDetectionDate\\\", type datetime}, {\\\"IntroductionDate\\\", type datetime}, {\\\"GitRef\\\", type text}, {\\\"Confidence\\\", type text}})\\nin\\n    #\\\"Changed Type\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Exception",
+      "isHidden": false
+    },
+    {
+      "name": "Sample File",
+      "lineageTag": "2236cc59-e7e0-42e3-9f36-6a4edfe27308",
+      "queryGroupId": "7238874e-db1b-4ed2-b217-4315cac7c3c3",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = AzureStorage.Blobs(\"stghazdo4548\"),",
+        "    #\"ado-alerts1\" = Source{[Name=\"ado-alerts\"]}[Data],",
+        "    #\"Expanded Attributes\" = Table.ExpandRecordColumn(#\"ado-alerts1\", \"Attributes\", {\"Content Type\", \"Kind\", \"Size\"}, {\"Attributes.Content Type\", \"Attributes.Kind\", \"Attributes.Size\"}),",
+        "    Navigation1 = #\"Expanded Attributes\"{0}[Content]",
+        "in",
+        "    Navigation1"
+      ],
+      "loadAsTableDisabled": true,
+      "resultType": "Binary",
+      "isHidden": false
+    },
+    {
+      "name": "Parameter1",
+      "lineageTag": "8fe23d65-ea98-4a85-abb3-63c75e79202a",
+      "queryGroupId": "7238874e-db1b-4ed2-b217-4315cac7c3c3",
+      "navigationStepName": "Navigation",
+      "text": [
+        "#\"Sample File\" meta [IsParameterQuery=true, BinaryIdentifier=#\"Sample File\", Type=\"Binary\", IsParameterQueryRequired=true]"
+      ],
+      "loadAsTableDisabled": true,
+      "resultType": "Binary",
+      "isHidden": false
+    },
+    {
+      "name": "Transform Sample File",
+      "lineageTag": "75b65b12-e721-493a-a1b2-d64f8d2c46e4",
+      "queryGroupId": "ca097278-8a92-43a7-a530-95dcd4a4b605",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = Csv.Document(Parameter1,[Delimiter=\",\", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+        "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])",
+        "in",
+        "    #\"Promoted Headers\""
+      ],
+      "loadAsTableDisabled": true,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "Transform File",
+      "lineageTag": "7ca419a2-388f-41e4-88f7-820b6fdbab48",
+      "queryGroupId": "7238874e-db1b-4ed2-b217-4315cac7c3c3",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = (Parameter1 as binary) => let",
+        "    Source = Csv.Document(Parameter1,[Delimiter=\",\", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+        "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])",
+        "in",
+        "    #\"Promoted Headers\"",
+        "in",
+        "    Source"
+      ],
+      "loadAsTableDisabled": true,
+      "resultType": "Function",
+      "isHidden": false
+    }
+  ],
+  "queryGroups": [
+    {
+      "name": "Transform File from ado-alerts",
+      "id": "ca097278-8a92-43a7-a530-95dcd4a4b605",
+      "description": ""
+    },
+    {
+      "name": "Helper Queries",
+      "id": "7238874e-db1b-4ed2-b217-4315cac7c3c3",
+      "description": "",
+      "parentId": "ca097278-8a92-43a7-a530-95dcd4a4b605"
+    }
+  ],
+  "culture": "en-CA"
+}
